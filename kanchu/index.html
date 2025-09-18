@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureAuth - ML-Powered Authentication System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --info: #4895ef;
+            --warning: #fca311;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --bg-gradient: linear-gradient(120deg, #4361ee, #3a0ca3, #7209b7);
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header Styles */
+        header {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+        }
+        
+        .btn-primary {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+        
+        .hero-content {
+            flex: 1;
+        }
+        
+        .hero h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            background: var(--primary);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+            font-size: 1.4rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .feature-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        
+        .feature-link:hover {
+            gap: 10px;
+            color: var(--primary-dark);
+        }
+        
+        /* Dashboard Styles */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .dashboard-header h2 {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .stat-title {
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .chart-container h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .recent-events {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2.5rem;
+            overflow-x: auto;
+        }
+        
+        .recent-events h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background-color: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-success {
+            background: rgba(76, 201, 240, 0.2);
+            color: var(--success);
+        }
+        
+        .status-warning {
+            background: rgba(252, 163, 17, 0.2);
+            color: var(--warning);
+        }
+        
+        .status-danger {
+            background: rgba(247, 37, 133, 0.2);
+            color: var(--danger);
+        }
+        
+        /* Auth Forms */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+        }
+        
+        .auth-form {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            margin: 2rem auto;
+        }
+        
+        .auth-form h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn-auth {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+        
+        .btn-auth:hover {
+            background: var(--primary-dark);
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--gray);
+        }
+        
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .auth-footer a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 240px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .footer-section p {
+            color: var(--light-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-section a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+            gap: 12px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light-gray);
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding: 2rem 20px 0;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .charts {
+                grid-template-columns: 1fr;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1.2rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mt-3 { margin-top: 3rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-3 { margin-bottom: 3rem; }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Projects Section */
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .project-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .project-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .project-desc {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .project-stats {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 1rem;
+        }
+        
+        .project-stat {
+            text-align: center;
+        }
+        
+        .project-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .project-stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        /* Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h3 {
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+        }
+        
+        .setting-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .setting-item label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .slider-value {
+            display: inline-block;
+            margin-left: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <a href="#" class="logo" onclick="showPage('home')">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>SecureAuth</h1>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" onclick="showPage('home')">Home</a></li>
+                        <li><a href="#" class="nav-link" onclick="showPage('features')">Features</a></li>
+                        <li><a href="#" class="nav-link" onclick="showPage('dashboard')">Dashboard</a></li>
+                        <li><a href="#" class="nav-link" onclick="showPage('documentation')">Documentation</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" onclick="showPage('login')">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="btn btn-primary" onclick="showPage('register')">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <section id="home" class="page active">
+                <div class="hero">
+                    <div class="hero-content">
+                        <h2>Secure Authentication with ML-Driven Fraud Detection</h2>
+                        <p>Protect your applications from account takeover, credential stuffing, and fraudulent access attempts with our hybrid authentication system that combines traditional security with machine learning.</p>
+                        <button class="btn btn-primary" onclick="showPage('register')">
+                            <i class="fas fa-rocket"></i> Get Started
+                        </button>
+                    </div>
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80" alt="Security Illustration">
+                    </div>
+                </div>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>ML-Powered Fraud Detection</h3>
+                        <p>Our system uses Isolation Forest for anomaly detection and XGBoost for supervised classification to identify fraudulent activities in real-time.</p>
+                        <a href="#" class="feature-link" onclick="showPage('features')">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Secure Authentication</h3>
+                        <p>Implement modern authentication practices with FastAPI, JWT, and bcrypt for secure user verification and session management.</p>
+                        <a href="#" class="feature-link" onclick="showPage('features')">
+                            Learn more <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Real-time Monitoring</h3>
+                        <p>Monitor login attempts, fraud probabilities, and system events through an intuitive admin dashboard with interactive visualizations.</p>
+                        <a href="#" class="feature-link" onclick="showPage('dashboard')">
+                            View dashboard <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Page -->
+            <section id="features" class="page">
+                <h2 class="text-center mb-3">System Features</h2>
+                
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>PostgreSQL Integration</h3>
+                        <p>Structured database for logging and analyzing login attempts with critical features like IP address, geolocation, device type, and time of login.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Hybrid Detection Engine</h3>
+                        <p>Combines rule-based checks (blacklisted IPs, impossible travel) with ML models optimized for imbalanced fraud detection scenarios.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>Real-time Decision Layer</h3>
+                        <p>Scores login attempts in real time and determines whether to allow access, block the user, or enforce additional verification (2FA).</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h3>Admin Dashboard</h3>
+                        <p>Real-time monitoring of login activity, fraud probabilities, and blocked events with interactive visualizations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h3>Containerized Deployment</h3>
+                        <p>Production-ready with Docker and CI/CD pipelines for model and service updates.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>Secure API</h3>
+                        <p>FastAPI backend with JWT tokens and bcrypt password hashing for maximum security.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Page -->
+            <section id="dashboard" class="page">
+                <div class="dashboard-header">
+                    <h2>Security Dashboard</h2>
+                    <div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> Generate Report
+                        </button>
+                        <button class="btn btn-outline" style="background: var(--dark); color: white; margin-left: 10px;" onclick="openSettings()">
+                            <i class="fas fa-cog"></i> Settings
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="stat-number">1,243</div>
+                        <div class="stat-title">Login Attempts (24h)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div class="stat-number">27</div>
+                        <div class="stat-title">Blocked Attempts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-number">5</div>
+                        <div class="stat-title">High Risk Events</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="stat-number">98.7%</div>
+                        <div class="stat-title">System Uptime</div>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('overview')">Overview</div>
+                    <div class="tab" onclick="switchTab('projects')">Projects</div>
+                    <div class="tab" onclick="switchTab('events')">Login Events</div>
+                    <div class="tab" onclick="switchTab('analytics')">Analytics</div>
+                </div>
+
+                <div id="overview" class="tab-content active">
+                    <div class="charts">
+                        <div class="chart-container">
+                            <h3>Login Attempts by Hour</h3>
+                            <canvas id="loginChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Risk Level Distribution</h3>
+                            <canvas id="riskChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="recent-events">
+                        <h3>Recent Login Events</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                    <th>IP Address</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Risk Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2023-06-15 14:23</td>
+                                    <td>john.doe@example.com</td>
+                                    <td>192.168.1.45</td>
+                                    <td>New York, US</td>
+                                    <td><span class="status status-success">Success</span></td>
+                                    <td>0.12</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 14:12</td>
+                                    <td>admin@company.com</td>
+                                    <td>103.216.45.78</td>
+                                    <td>Beijing, CN</td>
+                                    <td><span class="status status-danger">Blocked</span></td>
+                                    <td>0.94</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:58</td>
+                                    <td>sara.smith@example.com</td>
+                                    <td>172.67.142.89</td>
+                                    <td>London, UK</td>
+                                    <td><span class="status status-success">Success</span></td>
+                                    <td>0.08</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:45</td>
+                                    <td>jane.doe@example.com</td>
+                                    <td>98.132.214.56</td>
+                                    <td>Chicago, US</td>
+                                    <td><span class="status status-warning">2FA Required</span></td>
+                                    <td>0.63</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:30</td>
+                                    <td>peter.jones@example.com</td>
+                                    <td>203.113.87.124</td>
+                                    <td>Sydney, AU</td>
+                                    <td><span class="status status-success">Success</span></td>
+                                    <td>0.15</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="projects" class="tab-content">
+                    <div class="projects">
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div class="project-title">Secure Banking Portal</div>
+                            </div>
+                            <div class="project-desc">
+                                Multi-factor authentication system for online banking with real-time fraud detection.
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <div class="project-stat-value">98.2%</div>
+                                    <div class="project-stat-label">Success Rate</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">12</div>
+                                    <div class="project-stat-label">Blocked Attempts</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">0.3%</div>
+                                    <div class="project-stat-label">False Positives</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon" style="background: linear-gradient(135deg, #7209b7, #560bad);">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="project-title">E-Commerce Platform</div>
+                            </div>
+                            <div class="project-desc">
+                                Fraud prevention for online transactions with behavioral analysis and device fingerprinting.
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <div class="project-stat-value">99.5%</div>
+                                    <div class="project-stat-label">Success Rate</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">47</div>
+                                    <div class="project-stat-label">Blocked Attempts</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">0.8%</div>
+                                    <div class="project-stat-label">False Positives</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon" style="background: linear-gradient(135deg, #f72585, #b5179e);">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="project-title">Mobile Banking App</div>
+                            </div>
+                            <div class="project-desc">
+                                Biometric authentication with behavioral analytics for mobile banking applications.
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <div class="project-stat-value">97.8%</div>
+                                    <div class="project-stat-label">Success Rate</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">23</div>
+                                    <div class="project-stat-label">Blocked Attempts</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">0.5%</div>
+                                    <div class="project-stat-label">False Positives</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon" style="background: linear-gradient(135deg, #fca311, #fb8500);">
+                                    <i class="fas fa-cloud"></i>
+                                </div>
+                                <div class="project-title">Cloud Infrastructure</div>
+                            </div>
+                            <div class="project-desc">
+                                Secure access management for cloud resources with adaptive authentication policies.
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <div class="project-stat-value">99.1%</div>
+                                    <div class="project-stat-label">Success Rate</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">34</div>
+                                    <div class="project-stat-label">Blocked Attempts</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">0.4%</div>
+                                    <div class="project-stat-label">False Positives</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon" style="background: linear-gradient(135deg, #4cc9f0, #4895ef);">
+                                    <i class="fas fa-desktop"></i>
+                                </div>
+                                <div class="project-title">Corporate VPN</div>
+                            </div>
+                            <div class="project-desc">
+                                Zero-trust network access with continuous authentication and threat detection.
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <div class="project-stat-value">98.7%</div>
+                                    <div class="project-stat-label">Success Rate</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">19</div>
+                                    <div class="project-stat-label">Blocked Attempts</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">0.6%</div>
+                                    <div class="project-stat-label">False Positives</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon" style="background: linear-gradient(135deg, #2ec4b6, #1a936f);">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="project-title">Government Portal</div>
+                            </div>
+                            <div class="project-desc">
+                                High-security authentication system for government services with strict compliance requirements.
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <div class="project-stat-value">99.9%</div>
+                                    <div class="project-stat-label">Success Rate</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">62</div>
+                                    <div class="project-stat-label">Blocked Attempts</div>
+                                </div>
+                                <div class="project-stat">
+                                    <div class="project-stat-value">0.2%</div>
+                                    <div class="project-stat-label">False Positives</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="events" class="tab-content">
+                    <div class="recent-events">
+                        <h3>All Login Events</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                    <th>IP Address</th>
+                                    <th>Location</th>
+                                    <th>Device</th>
+                                    <th>Status</th>
+                                    <th>Risk Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2023-06-15 14:23</td>
+                                    <td>john.doe@example.com</td>
+                                    <td>192.168.1.45</td>
+                                    <td>New York, US</td>
+                                    <td>Chrome, Windows</td>
+                                    <td><span class="status status-success">Success</span></td>
+                                    <td>0.12</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 14:12</td>
+                                    <td>admin@company.com</td>
+                                    <td>103.216.45.78</td>
+                                    <td>Beijing, CN</td>
+                                    <td>Firefox, Linux</td>
+                                    <td><span class="status status-danger">Blocked</span></td>
+                                    <td>0.94</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:58</td>
+                                    <td>sara.smith@example.com</td>
+                                    <td>172.67.142.89</td>
+                                    <td>London, UK</td>
+                                    <td>Safari, macOS</td>
+                                    <td><span class="status status-success">Success</span></td>
+                                    <td>0.08</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:45</td>
+                                    <td>jane.doe@example.com</td>
+                                    <td>98.132.214.56</td>
+                                    <td>Chicago, US</td>
+                                    <td>Chrome, Android</td>
+                                    <td><span class="status status-warning">2FA Required</span></td>
+                                    <td>0.63</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:30</td>
+                                    <td>peter.jones@example.com</td>
+                                    <td>203.113.87.124</td>
+                                    <td>Sydney, AU</td>
+                                    <td>Edge, Windows</td>
+                                    <td><span class="status status-success">Success</span></td>
+                                    <td>0.15</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:22</td>
+                                    <td>mary.wilson@example.com</td>
+                                    <td>85.239.112.41</td>
+                                    <td>Berlin, DE</td>
+                                    <td>Chrome, Windows</td>
+                                    <td><span class="status status-success">Success</span></td>
+                                    <td>0.21</td>
+                                </tr>
+                                <tr>
+                                    <td>2023-06-15 13:15</td>
+                                    <td>david.brown@example.com</td>
+                                    <td>112.196.203.77</td>
+                                    <td>Mumbai, IN</td>
+                                    <td>Chrome, Android</td>
+                                    <td><span class="status status-danger">Blocked</span></td>
+                                    <td>0.87</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="analytics" class="tab-content">
+                    <div class="charts">
+                        <div class="chart-container">
+                            <h3>Login Success Rate Over Time</h3>
+                            <canvas id="successRateChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Authentication Methods Distribution</h3>
+                            <canvas id="authMethodsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documentation Page -->
+            <section id="documentation" class="page">
+                <h2 class="text-center mb-3">System Documentation</h2>
+                
+                <div class="feature-card">
+                    <h3>API Endpoints</h3>
+                    <p>The SecureAuth system provides the following REST API endpoints:</p>
+                    
+                    <div class="recent-events">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Endpoint</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>POST</td>
+                                    <td>/api/auth/register</td>
+                                    <td>Register a new user account</td>
+                                </tr>
+                                <tr>
+                                    <td>POST</td>
+                                    <td>/api/auth/login</td>
+                                    <td>Authenticate a user</td>
+                                </tr>
+                                <tr>
+                                    <td>POST</td>
+                                    <td>/api/auth/verify-2fa</td>
+                                    <td>Verify two-factor authentication code</td>
+                                </tr>
+                                <tr>
+                                    <td>GET</td>
+                                    <td>/api/events</td>
+                                    <td>Retrieve login events</td>
+                                </tr>
+                                <tr>
+                                    <td>GET</td>
+                                    <td>/api/analytics</td>
+                                    <td>Get system analytics data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="feature-card mt-2">
+                    <h3>Integration Guide</h3>
+                    <p>To integrate the SecureAuth system with your application:</p>
+                    <ol>
+                        <li>Install the SecureAuth client library</li>
+                        <li>Configure your API keys and endpoint</li>
+                        <li>Implement the authentication flow in your application</li>
+                        <li>Handle authentication responses and errors</li>
+                        <li>Test the integration thoroughly</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Login Form -->
+            <section id="login" class="page">
+                <div class="auth-container">
+                    <div class="auth-form">
+                        <h2>Login to Your Account</h2>
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="login-email">Email Address</label>
+                                <input type="email" id="login-email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" placeholder="Enter your password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-remember">
+                                    <input type="checkbox" id="login-remember"> Remember me
+                                </label>
+                            </div>
+                            <button type="submit" class="btn-auth">Login</button>
+                        </form>
+                        <div class="auth-footer">
+                            <p>Don't have an account? <a href="#" onclick="showPage('register')">Register</a></p>
+                            <p><a href="#">Forgot your password?</a></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Register Form -->
+            <section id="register" class="page">
+                <div class="auth-container">
+                    <div class="auth-form">
+                        <h2>Create an Account</h2>
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label for="register-name">Full Name</label>
+                                <input type="text" id="register-name" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-email">Email Address</label>
+                                <input type="email" id="register-email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-password">Password</label>
+                                <input type="password" id="register-password" placeholder="Create a password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-confirm">Confirm Password</label>
+                                <input type="password" id="register-confirm" placeholder="Confirm your password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-terms">
+                                    <input type="checkbox" id="register-terms" required> I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn-auth">Register</button>
+                        </form>
+                        <div class="auth-footer">
+                            <p>Already have an account? <a href="#" onclick="showPage('login')">Login</a></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SecureAuth</h3>
+                    <p>Advanced authentication system with ML-driven fraud detection for modern applications.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-dev"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home')"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#" onclick="showPage('features')"><i class="fas fa-list"></i> Features</a></li>
+                        <li><a href="#" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="#" onclick="showPage('documentation')"><i class="fas fa-book"></i> Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Technology</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-server"></i> FastAPI</a></li>
+                        <li><a href="#"><i class="fas fa-database"></i> PostgreSQL</a></li>
+                        <li><a href="#"><i class="fas fa-brain"></i> Machine Learning</a></li>
+                        <li><a href="#"><i class="fas fa-box"></i> Docker</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-book-open"></i> Documentation</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="#"><i class="fas fa-bug"></i> Report an Issue</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 SecureAuth. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--danger);"></i> for developers</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeSettings()">&times;</button>
+            <div class="modal-header">
+                <h3>System Settings</h3>
+            </div>
+            <div class="setting-item">
+                <label for="riskThreshold">Risk Threshold <span class="slider-value" id="thresholdValue">0.70</span></label>
+                <input type="range" id="riskThreshold" min="0" max="1" step="0.01" value="0.7" oninput="updateThresholdValue(this.value)">
+                <p class="help-text">Adjust the sensitivity of the fraud detection system. Higher values will reduce false positives but may increase false negatives.</p>
+            </div>
+            <div class="setting-item">
+                <label for="autoBlock">Auto-Block Suspicious Activity</label>
+                <input type="checkbox" id="autoBlock" checked>
+                <p class="help-text">Automatically block login attempts that exceed the risk threshold.</p>
+            </div>
+            <div class="setting-item">
+                <label for="twofa">Enable Two-Factor Authentication</label>
+                <input type="checkbox" id="twofa" checked>
+                <p class="help-text">Require two-factor authentication for all users or only for high-risk attempts.</p>
+            </div>
+            <div class="setting-item">
+                <label for="logRetention">Log Retention Period <span class="slider-value" id="retentionValue">90 days</span></label>
+                <input type="range" id="logRetention" min="7" max="365" step="7" value="90" oninput="updateRetentionValue(this.value)">
+                <p class="help-text">How long to keep login attempt logs before automatic deletion.</p>
+            </div>
+            <div class="setting-item">
+                <label for="emailAlerts">Email Alert Frequency</label>
+                <select id="emailAlerts">
+                    <option value="immediate">Immediate</option>
+                    <option value="hourly">Hourly Digest</option>
+                    <option value="daily" selected>Daily Digest</option>
+                    <option value="weekly">Weekly Digest</option>
+                </select>
+                <p class="help-text">How often to receive email alerts about security events.</p>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;" onclick="saveSettings()">Save Settings</button>
+        </div>
+    </div>
+
+    <script>
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to the current navigation link if it exists
+            const currentNavLink = document.querySelector(`.nav-link[onclick="showPage('${pageId}')"]`);
+            if (currentNavLink) {
+                currentNavLink.classList.add('active');
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        // Tab Switching
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activate selected tab
+            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        }
+        
+        // Settings Modal
+        function openSettings() {
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+        
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+        
+        function updateThresholdValue(value) {
+            document.getElementById('thresholdValue').textContent = value;
+        }
+        
+        function updateRetentionValue(value) {
+            document.getElementById('retentionValue').textContent = value + ' days';
+        }
+        
+        function saveSettings() {
+            alert('Settings saved successfully!');
+            closeSettings();
+        }
+        
+        // Form Submissions
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate login success
+            showPage('dashboard');
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate registration success
+            alert('Registration successful! Please login.');
+            showPage('login');
+        });
+        
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login attempts chart - Changed to bar chart
+            const loginCtx = document.getElementById('loginChart').getContext('2d');
+            const loginChart = new Chart(loginCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
+                    datasets: [{
+                        label: 'Login Attempts',
+                        data: [8, 5, 3, 7, 15, 28, 34, 41, 32, 26, 18, 12],
+                        backgroundColor: '#4361ee',
+                        borderColor: '#3a0ca3',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Attempts'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Risk distribution chart
+            const riskCtx = document.getElementById('riskChart').getContext('2d');
+            const riskChart = new Chart(riskCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Low Risk', 'Medium Risk', 'High Risk'],
+                    datasets: [{
+                        data: [75, 20, 5],
+                        backgroundColor: [
+                            '#4cc9f0',
+                            '#fca311',
+                            '#f72585'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Success rate chart - Changed to line chart
+            const successRateCtx = document.getElementById('successRateChart').getContext('2d');
+            const successRateChart = new Chart(successRateCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Success Rate (%)',
+                        data: [92, 94, 96, 95, 97, 98, 97, 98, 99, 98, 97, 99],
+                        borderColor: '#4cc9f0',
+                        backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 90,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Success Rate (%)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Authentication methods chart
+            const authMethodsCtx = document.getElementById('authMethodsChart').getContext('2d');
+            const authMethodsChart = new Chart(authMethodsCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Password', '2FA', 'Biometric', 'SSO'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: [
+                            '#4361ee',
+                            '#4cc9f0',
+                            '#7209b7',
+                            '#fca311'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('settingsModal');
+            if (event.target === modal) {
+                closeSettings();
+            }
+        });
+    </script>
+</body>
+</html>
